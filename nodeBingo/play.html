@@ -29,6 +29,7 @@
   </head>
   <body>
     <h1 id="username"></h1>
+    <h2 id="bingo">0</h2>
     <div style="margin:auto;width:100%;height: 100%;" class="button-container">
 
       <div class="btnRow">
@@ -54,7 +55,12 @@
 <script>
   
   
-
+  var matrix = [];
+  var matrix = [];
+  for(var i=0; i<5; i++) {
+    matrix[i] = new Array(5);
+    }
+  var bingo = [0,0,0,0,0,0,0,0,0,0,0,0];
   $(function () {
     var socket = io();
     var nums = [];
@@ -94,8 +100,55 @@
 
     socket.on('numClick', function(msg){
       var text='button[value=';
+      var divRow = document.getElementsByClassName('btnRow');
       text=text+'"'+msg+'"]';
       $(text).prop('disabled',true);
+     
+      (function bing(){
+        var count = 0;
+        for(var i = 0; i < bingo.length; ++i){
+        if(bingo[i] == 1)
+          count++;
+        }
+        var bingText=document.getElementById('bingo');
+        console.log('bing  called!');
+        for(i=1;i<=5;i++){
+        for(j=1;j<=5;j++)
+          if(divRow[i].childNodes[j].disabled== true)
+            matrix[i-1][j-1] = 1;
+      }
+      var diag1=[]
+      var diag2=[]   
+      for(i=1;i<=5;i++){
+        if(matrix[i-1].toString()=="1,1,1,1,1")
+          bingo[i-1] = 1;
+          diag1.push(matrix[i-1][i-1]);
+          diag2.push(matrix[i-1][5-i]);
+      }
+      if(diag1.toString()=="1,1,1,1,1")
+        bingo[10]=1;
+        bingText.innerText=count;
+
+      if(diag2.toString()=="1,1,1,1,1")
+        bingo[11]=1;
+        bingText.innerText=count;
+
+      for(j=1;j<=5;j++){
+        var temp=[];
+        for(i=1;i<=5;i++)
+          temp.push(matrix[i-1][j-1]) ;
+        
+        if(temp.toString()=="1,1,1,1,1")
+          bingo[4+j] = 1;
+          bingText.innerText=count;
+   
+      }
+      console.log(bingo);
+      })();
+
+
+
+
     });
 
     
