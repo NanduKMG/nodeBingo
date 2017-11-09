@@ -15,20 +15,37 @@
 
 
       .button-container button{
+        background-color: white;
+
         margin:auto;
-        width: 50px;
-        height: 50px;
+        width: 100px;
+        height: 100px;
         display: inline;
+        border-width: 1px;
+        border-style: dashed;
+    
+        border-color: #008edb;
+
+        box-shadow: 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12), 0 5px 5px -3px rgba(0, 0, 0, .2);
       }
 
       .button-container button:disabled{
-        background-color: black;
+        background-color: #008edb;
         color: white;
       }
+
+      .btnRow{
+        text-align: center;
+      }
+
+
+
+      h1{text-align: center;}
+      h2{text-align: center;}
     </style>
   </head>
   <body>
-    <h1 id="username"></h1>
+    <h1 ><span id="username"></span>'s Game</h1>
     <h2 id="bingo">0</h2>
     <div style="margin:auto;width:100%;height: 100%;" class="button-container">
 
@@ -56,7 +73,6 @@
   
   
   var matrix = [];
-  var matrix = [];
   for(var i=0; i<5; i++) {
     matrix[i] = new Array(5);
     }
@@ -69,6 +85,7 @@
     socket.on('reload',function(arr,username,order){
       if(arr.length===0){
         console.log('first load');
+
       }
       else{
         console.log('not first load');
@@ -82,12 +99,21 @@
       console.log(order);
       //createBingo(order);
       localStorage.setItem("nums", JSON.stringify(order));
-      nums=order.slice();
+      //nums=order.slice();
       console.log(nums);
       console.log(username+'is the user name according to server');
       //console.log($('#username'));
-      $('#username').text(username+"'s game");
+      $('#username').text(username);
     });
+
+
+
+    socket.on('win',function(username){
+      alert(username+"won the game!");
+    });
+
+
+
     
     //createBingo(nums);
 
@@ -106,10 +132,7 @@
      
       (function bing(){
         var count = 0;
-        for(var i = 0; i < bingo.length; ++i){
-        if(bingo[i] == 1)
-          count++;
-        }
+        
         var bingText=document.getElementById('bingo');
         console.log('bing  called!');
         for(i=1;i<=5;i++){
@@ -122,6 +145,7 @@
       for(i=1;i<=5;i++){
         if(matrix[i-1].toString()=="1,1,1,1,1")
           bingo[i-1] = 1;
+          //bingText.innerText=count;
           diag1.push(matrix[i-1][i-1]);
           diag2.push(matrix[i-1][5-i]);
       }
@@ -143,7 +167,20 @@
           bingText.innerText=count;
    
       }
-      console.log(bingo);
+
+
+      for(var i = 0; i < bingo.length; ++i){
+        if(bingo[i] == 1)
+          count++;
+        }
+      console.log(count);
+      if(count==5){
+        var username=document.getElementById("username")
+        console.log(username.innerHTML+'won the  game!');
+        socket.emit('win',username.innerHTML);
+      }
+
+
       })();
 
 
@@ -170,16 +207,20 @@
       btn.setAttribute("value",nextChar);
       var t = document.createTextNode(nextChar);       // Create a text node
       btn.appendChild(t);      
-      btn.setAttribute("style","font-size:14px;width:50px;height:50px;");
+      btn.setAttribute("style","font-size:14px;width:70px;height:70px;");
       count++;
       if(count%5===0){j+=1;}
       divRow[j].appendChild(btn);
       }
     };
+    
+
     var nums = JSON.parse(localStorage.getItem("nums"));
     console.log(nums +'is it here');
     createBingo(nums);
-</script>
+    localStorage.removeItem('nums');
+    console.log(localStorage.getItem('nums')+ 'is the nums at end');
+  </script>
 
   </body>
 </html>
