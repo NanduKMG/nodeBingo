@@ -10,6 +10,7 @@ var hist = [];
 var players=[];
 var userOrder={} ;//Object storing username:order array
 var nums = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'];
+var turn=0;
 
 
 var secretCode = "yo";
@@ -52,30 +53,35 @@ res.sendFile(__dirname + '/index.html');
 app.post('/myaction', function(req, res) {
   
   if(req.body.secret === secretCode){
+    if(!players.includes(req.body.name)){
     players.push(req.body.name);
-    console.log(players);
-    console.log("PLAYERS LIST:"+players);
+    console.log('New player added to players:'+players);
+    //console.log("His turn is :"+turn);
+    //turn++;
+    }
+    
     res.sendFile(__dirname+'/play.html');
     res.cookie('name', req.body.name);
 
-    console.log(userOrder[req.body.name]);
+    //console.log(userOrder[req.body.name]);
     //make new random order for that user
     
     if(userOrder[req.body.name]===undefined){
-      console.log('ifil keri!');
-      //console.log(userOrder[req.body.name]);
+      console.log('Creating New random bingo order for you...');
+      
       //console.log(req.body.name);
       
-    userOrder[req.body.name]=shuffle(nums.slice(0));
-    //console.log('nums is '+nums);
-    //console.log(userOrder);
+      userOrder[req.body.name]=shuffle(nums.slice(0));
+      console.log(userOrder[req.body.name]);
+      //console.log('nums is '+nums);
+      //console.log(userOrder);
   }
 
     else{
-      console.log('ifil keriyilla!');
+      console.log('User already there so not creating random order');
     }
 
-    console.log(userOrder);
+    //console.log(userOrder);
   }
   else{
     res.send("PHA! wrong code");
@@ -102,7 +108,8 @@ io.on('connection', function(socket){
   //console.log('usernamecookies:'+usernamecookies[0]);
   var pos=-1;
   var username;
-
+  var hisTurn = players.indexOf(username);
+  var brdOn=0;
   for (var i = usernamecookies.length - 1; i >= 0; i--) {
     //console.log('usernamecookies:'+usernamecookies[i]);
     if(usernamecookies[i].search("name")>=0){
@@ -121,14 +128,19 @@ io.on('connection', function(socket){
   });
 
   socket.on('numClick', function(msg){
-    console.log('message: ' + msg);
-    io.emit('numClick',msg);
+    console.log(username + 'message: ' + msg);
+    turn = (turn + 1)%players.length;
+    console.log('now of turn of player :'+players[turn])
+    
+    io.emit('numClick',msg,players[turn]);
     hist.push(msg);
-    console.log(hist);	
+    console.log(hist);
+    
+    console.log("next turn:"+turn);	
   });
 
   socket.on('win', function(msg){
-    console.log(msg+"won reported!");
+    console.log(msg+" won reported!");
     io.emit('win',msg);
    
   });
@@ -137,7 +149,7 @@ io.on('connection', function(socket){
     //order for this user
     var order = userOrder[username];
     console.log(order +'was send from server');
-  	console.log("reload called at server");
+  	console.log(username + "reload called at server");
   	socket.emit('reload',hist,username,order);
   });
 
