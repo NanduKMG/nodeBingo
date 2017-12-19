@@ -4,6 +4,10 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 
+// set the port of our application
+// process.env.PORT lets the port be set by Heroku
+var port = process.env.PORT || 8080;
+
 app.use(bodyParser.urlencoded({ extended: true })); 
 
 var hist = [];
@@ -40,7 +44,14 @@ function shuffle(array) {
 
 
 
+//reset game condition
+function reset(){
+  hist.length=0;
+  userOrder.length=0;
+  turn=0;
+  players.length=0;
 
+}
 
 
 
@@ -90,6 +101,13 @@ app.post('/myaction', function(req, res) {
 
 app.get('/play', function(req, res){
 res.sendFile(__dirname + '/play.html');
+});
+
+
+app.get('/reset', function(req, res){
+res.send("Okay reseteyth.");
+reset();
+console.log(players,hist,turn);
 });
 
 
@@ -158,6 +176,9 @@ io.on('connection', function(socket){
 });
 
 
-http.listen(3000, function(){
+/*http.listen(3000, function(){
   console.log('listening on *:3000');
+});*/
+app.listen(port, function() {
+    console.log('Our app is running on http://localhost:' + port);
 });
