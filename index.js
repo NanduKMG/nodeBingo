@@ -168,7 +168,7 @@ io.on('connection', function(socket){
     var order = userOrder[username];
     console.log(order +'was send from server');
   	console.log(username + "reload called at server");
-  	socket.emit('reload',hist,username,order,players[turn]);
+  	socket.emit('reload',hist,username,order);
   });
 
 

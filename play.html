@@ -82,26 +82,7 @@
     var nums = [];
 
     socket.emit('reload');
-    socket.on('reload',function(arr,username,order,stRet){
-        if(stRet===username){
-        $('.button-container').css('pointer-events','');
-        $('.button-container button').css('box-shadow','0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12), 0 5px 5px -3px rgba(0, 0, 0, .2)');
-        $('.button-container button').css('border-width','1px');
-        
-        console.log("username : can play" + stRet);
-      }
-      else{
-        $('.button-container').css('pointer-events','none');
-        $('.button-container button').css('box-shadow','none');
-        $('.button-container button').css('border-width','0px');
-
-        console.log("username : can't play" + stRet);
-      }
-
-
-
-
-
+    socket.on('reload',function(arr,username,order){
       if(arr.length===0){
         console.log('first load');
 
