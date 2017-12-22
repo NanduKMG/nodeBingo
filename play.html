@@ -38,10 +38,38 @@
         text-align: center;
       }
 
-
+      li {
+        font-size: 20px;
+        text-align: center;
+        display: block;
+         margin: auto;
+        list-style: none;
+        background: #000;
+        color: #fff;
+        line-height: 2em;
+        
+        padding: 0 0.5em;
+        overflow: hidden;
+        width: 10em;
+      }
 
       h1{text-align: center;}
       h2{text-align: center;}
+      h3{text-align: center;font-size: 20px;}
+
+
+    h3:before {
+    content: '';
+    background: black;
+
+    width: 10%;
+    margin: auto;
+    height: 2px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: block;
+ 
+}
     </style>
   </head>
   <body>
@@ -65,13 +93,19 @@
      
 
     </div>
+    <h3 style="margin-top: 20px; margin-bottom: 20px; ">Turn:</h3>
+    <div id="otherPlayers" >
+      <ul id="playerList" class="fade">
+        
+      </ul>
+    </div>
     
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   
-  
+  var playerCount=0;
   var matrix = [];
   for(var i=0; i<5; i++) {
     matrix[i] = new Array(5);
@@ -83,6 +117,18 @@
 
     socket.emit('reload');
     socket.on('reload',function(arr,username,order,stRet){
+
+       listElem = document.getElementsByTagName("li");
+       for (var i = 0; i < listElem.length; i++) {
+          if(listElem[i].textContent==stRet){
+            listElem[i].setAttribute("style","background-color:#008edb;color:white;");
+          }
+          else{
+            listElem[i].setAttribute("style","background-color:white;color:#008edb;");
+          }
+
+       }
+
         if(stRet===username){
         $('.button-container').css('pointer-events','');
         $('.button-container button').css('box-shadow','0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12), 0 5px 5px -3px rgba(0, 0, 0, .2)');
@@ -128,15 +174,43 @@
 
 
     socket.on('win',function(username){
-      alert(username+"won the game!");
+      alert(username+"won the game!  Go to url/reset to reset the game :)");
     });
 
+    socket.on('othPlayers',function(players){
+      console.log('players list: '+players);
+      var ul = document.getElementById("playerList");
+      for (;  playerCount<players.length ; playerCount++) {
+        
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(players[playerCount]));
+      console.log('now player count is : '+playerCount);
+      console.log(players[playerCount]);
+      console.log(li);
+      //li.setAttribute("id", "element4"); // added line
+      ul.appendChild(li);
+      }
 
+      listElem = document.getElementsByTagName("li");
+
+     // for (var i = 0; i < listElem.length; i++) {listElem[i].className = listElem[i].className +" show";}
+
+      /*var ul = document.getElementById("playerList");
+      var li = document.createElement("li");
+      li.appendChild(document.createTextNode(players[playerCount]));
+      playerCount++;
+      //li.setAttribute("id", "element4"); // added line
+      ul.appendChild(li);*/
+    });
 
     
     //createBingo(nums);
 
     $('button').click(function(){
+      //immediatly disable sandy bro bug!
+      $('.button-container').css('pointer-events','none');
+        $('.button-container button').css('box-shadow','none');
+        $('.button-container button').css('border-width','0px');
       socket.emit('numClick', $(this).val());
       $(this).prop('disabled',true);
       //$('#m').val('');
@@ -144,6 +218,18 @@
     });
 
     socket.on('numClick', function(msg,stRet){
+
+      listElem = document.getElementsByTagName("li");
+       for (var i = 0; i < listElem.length; i++) {
+          if(listElem[i].textContent==stRet){
+            listElem[i].setAttribute("style","background-color:#008edb;color:white;");
+          }
+          else{
+            listElem[i].setAttribute("style","background-color:white;color:#008edb;");
+          }
+
+       }
+
 
       console.log(username.textContent);
       if(stRet===username.textContent){
@@ -208,6 +294,7 @@
         if(bingo[i] == 1)
           count++;
         }
+      bingText.innerText=count;
       console.log(count);
       if(count==5){
         var username=document.getElementById("username")

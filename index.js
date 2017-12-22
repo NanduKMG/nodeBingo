@@ -38,10 +38,23 @@ function shuffle(array) {
   return array;
 }
 
+//reset game condition
+function reset(){
+  hist.length=0;
+  userOrder.length=0;
+  turn=0;
+  players.length=0;
+
+}
 
 
 
 
+app.get('/reset', function(req, res){
+res.send("Okay reseteyth.");
+reset();
+console.log(players,hist,turn);
+});
 
 
 
@@ -122,10 +135,14 @@ io.on('connection', function(socket){
  
   username = usernamecookies[pos].slice(usernamecookies[pos].search("=")+1);
   console.log(username+" started connection");
+
   //console.log('a user connected');
   socket.on('disconnect', function(){
     console.log(username +' disconnected');
   });
+
+  //chumma send fellow players list!
+  io.emit('othPlayers',players);
 
   socket.on('numClick', function(msg){
     console.log(username + 'message: ' + msg);
