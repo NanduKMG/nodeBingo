@@ -12,8 +12,8 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
-      
-      .fireworks {
+
+       .fireworks {
         position: absolute;
         top: 0;
         left: 0;
@@ -34,13 +34,13 @@
         border-width: 1px;
         border-style: dashed;
     
-        border-color: #206eff;
+        border-color: #008edb;
 
         box-shadow: 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12), 0 5px 5px -3px rgba(0, 0, 0, .2);
       }
 
       .button-container button:disabled{
-        background-color: #206eff;
+        background-color: #008edb;
         color: white;
       }
 
@@ -223,21 +223,17 @@
       $('.button-container').css('pointer-events','none');
         $('.button-container button').css('box-shadow','none');
         $('.button-container button').css('border-width','0px');
-       $('canvas').css('z-index','1');
+            $('canvas').css('z-index','1');
        window.setTimeout(function(){
         $('canvas').css('z-index','-1');
         }, 500);
       socket.emit('numClick', $(this).val());
       $(this).prop('disabled',true);
-
-      //background change parupadi
-    
       //$('#m').val('');
       //return false;
     });
 
     socket.on('numClick', function(msg,stRet){
-      //$('canvas').css('z-index','-1');
 
       listElem = document.getElementsByTagName("li");
        for (var i = 0; i < listElem.length; i++) {
@@ -362,14 +358,9 @@
     createBingo(nums);
     localStorage.removeItem('nums');
     console.log(localStorage.getItem('nums')+ 'is the nums at end');
-  
-  
-
-
-
-
   </script>
-  <script type="text/javascript">
+
+   <script type="text/javascript">
   
 var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
 var ff = navigator.userAgent.indexOf('Firefox') > 0;
@@ -414,8 +405,6 @@ var fireworks = (function() {
     p.draw = function() {
       ctx.globalAlpha = p.alpha;
       ctx.beginPath();
-      if(p.radius<0){
-      console.log(p.radius);}
       ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, true);
       ctx.lineWidth = p.lineWidth;
       ctx.strokeStyle = p.color;
@@ -430,13 +419,11 @@ var fireworks = (function() {
     p.x = x;
     p.y = y;
     p.color = colors[anime.random(0, colors.length - 1)];
-    p.radius = Math.abs(anime.random(getFontSize(), getFontSize() * 2));
-    p.radius=Math.abs(p.radius);
+    p.radius = anime.random(getFontSize(), getFontSize() * 2);
     p.draw = function() {
       ctx.beginPath();
       if(p.radius<0){
-        p.radius = p.radius*-1;
-      console.log(p.radius);}
+        p.radius = p.radius*-1;}//some bug making it negative
       ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI, true);
       ctx.fillStyle = p.color;
       ctx.fill();
@@ -473,7 +460,7 @@ var fireworks = (function() {
     });
     var circleAnimation = anime({
       targets: circle,
-      radius: function() { return Math.abs(anime.random(getFontSize() * 8.75, getFontSize() * 11.25)); },
+      radius: function() { return anime.random(getFontSize() * 8.75, getFontSize() * 11.25); },
       lineWidth: 0,
       alpha: {
         value: 0,
@@ -519,6 +506,5 @@ var fireworks = (function() {
 
 
 </script>
-
   </body>
 </html>
