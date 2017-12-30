@@ -63,6 +63,11 @@ res.sendFile(__dirname + '/index.html');
 });
 
 
+app.get('/anime.min.js', function(req, res){
+res.sendFile(__dirname + '/anime.min.js');
+});
+
+
 app.post('/myaction', function(req, res) {
   
   if(req.body.secret === secretCode){
