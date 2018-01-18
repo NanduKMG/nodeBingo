@@ -143,7 +143,8 @@ app.post('/myaction', function(req, res) {
     //console.log(userOrder);
   }
   else{
-    res.send("PHA! wrong code");
+    //res.send("PHA! wrong code");
+    res.sendFile(__dirname + '/error.html');
   }
 });
 
