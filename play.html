@@ -186,7 +186,8 @@
 
 
     socket.on('win',function(username){
-      alert(username+"won the game!  Go to url/reset to reset the game :)");
+      alert(username+" won the game!");
+      window.location.replace("https://nodebingo.herokuapp.com/reset");
     });
 
     socket.on('othPlayers',function(players){
