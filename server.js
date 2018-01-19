@@ -93,7 +93,8 @@ function shuffle(array) {
 
 
 app.get('/reset', function(req, res){
-res.send("Okay reseteyth.");
+//res.send("Okay reseteyth.");
+res.sendFile(__dirname + '/reset.html');
 reset();
 console.log(players,hist,turn);
 });
